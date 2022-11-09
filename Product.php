@@ -1,4 +1,6 @@
 <?php 
+
+//es el modelo
 //Fichero que simula el modelo con datos  
     class Product{
         const PRODUCTS =[
@@ -10,7 +12,7 @@
 
     function __Construct() { /*cons vacio */ }
 
-    //devuelve todos los productos
+    //devuelve todos los productos con all()
     public static function all()
     {
 
@@ -18,8 +20,8 @@
 
     }
 
-    //devolver un producto parcticular
-    public function find($id){
+    //devolver un producto parcticular con find()
+    public static function find($id){
         return Product::PRODUCTS[$id-1];
     }
     }
