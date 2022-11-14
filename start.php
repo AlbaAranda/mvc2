@@ -6,9 +6,11 @@
         //accion: metodos de los controladores
         //parametros: find->ide de producto
     
-    require "../controller.php";
+    require "core/App.php";
 
-    $app = new Controller();
+    $app = new App();
+
+    /*$app = new Controller();
 
     //llamar a los métodos del controlador 
 
@@ -34,4 +36,4 @@
         die("Método no encontrado"); //exit //acaba la ejecucion del programa y muestra un mensaje
     }
 
-
+    */

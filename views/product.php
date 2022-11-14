@@ -13,7 +13,7 @@
             <!-- " lo puesto antes $item[0] es igual que poner echo -->
             <td>Identificador <?= $item[0]?></td>
             <td>Descripcion <?= $item[1] ?></td>
-            <td><a href="?method=show&&id= <?= $item[0]?>">Ver Detalles</a></td>
+            <td><a href="show?id= <?= $item[0]?>">Ver Detalles</a></td>
         </tr>
     <?php endforeach; ?> <!-- en lugar de poner {} poner : y terminar en endforeach queda mas limpio cuando se pone php dentro de html-->
 </table>
