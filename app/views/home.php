@@ -20,8 +20,12 @@
 
   <body>
 
-    <?php require "../views/header.php"  ?>
-    <?php require "../views/footer.php" ?>
+    <?php require "../app/views/header.php";  ?>
+
+    <div>
+        <div></div>
+    </div>
+    <?php require "../app/views/footer.php"; ?>
 
   </body>
 </html>
