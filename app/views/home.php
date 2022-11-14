@@ -20,8 +20,14 @@
 
   <body>
 
-    <?php require "../views/header.php"  ?>
-    <?php require "../views/footer.php" ?>
+    <?php require "../app/views/header.php";  ?>
+    <div class="container">
+        <div class="col-12">
+            <h1>Menú principal</h1>
+            Este es el menú principal de la aplicación
+        </div>
+    </div>
+    <?php require "../app/views/footer.php"; ?>
 
   </body>
 </html>

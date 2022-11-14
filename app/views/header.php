@@ -8,13 +8,13 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="../app/views/home.php">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Product</a>
+              <a class="nav-link" href="/product">Product</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="#"></a>
+              <a class="nav-link disabled" href="/login">Login</a>
             </li>
           </ul>
           <form class="form-inline mt-2 mt-md-0">
