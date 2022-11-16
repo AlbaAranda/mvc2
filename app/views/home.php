@@ -22,8 +22,10 @@
 
     <?php require "../app/views/header.php";  ?>
 
-    <div>
-        <div></div>
+    <div class="container">
+        <div clas="col-12"></div>
+        <h1>Menú principal</h1>
+        Esta es el menú principal de la aplicación
     </div>
     <?php require "../app/views/footer.php"; ?>
 

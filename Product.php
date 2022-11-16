@@ -1,5 +1,7 @@
 <?php 
 
+//namespace global es \
+
 //es el modelo
 //Fichero que simula el modelo con datos  
     class Product{

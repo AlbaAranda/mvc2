@@ -1,4 +1,7 @@
 <?php   
+
+    namespace App\Controllers;
+    
     class LoginController{
         
         function __construct()
@@ -14,7 +17,7 @@
         } //fin del metodo index
 
         function login(){
-            echo "<br>Dentro de show de LOGINCONTROLLER";
+            echo "<br>Dentro de login de LOGINCONTROLLER";
         } //fin del metodo show
 
     } //fin clase
