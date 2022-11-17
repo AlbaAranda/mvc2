@@ -12,7 +12,6 @@
         <?= $product[0] ?>
         <strong>Descripcion</strong>
         <?= $product[1] ?>
-
     </li>
 </body>
 </html>
