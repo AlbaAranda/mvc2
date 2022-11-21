@@ -50,6 +50,7 @@
 
 
             //existe el metodo en el controlador? 
+            $controllerName ="\\App\\Controllers\\$controllerName";
             $controllerObject = new $controllerName; //objeto de la clase ($controllerName)
 
             if(method_exists($controllerObject,$method)){
