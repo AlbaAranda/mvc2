@@ -1,6 +1,7 @@
 <?php   
 
-namespace App\Controllers;
+    namespace App\Controllers;
+    //no se puede poner ni comentarios delante del namespace, ya que incluso eso dará error
     class HomeController{
         
         function __construct()

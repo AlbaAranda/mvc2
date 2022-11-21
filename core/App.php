@@ -1,5 +1,6 @@
 <?php 
 
+    namespace Core;
     /*
         - Si la url no especifica ningun controlador (recurso) => asigno uno por defecto => home
         - Si no la url no especifica ingun método => asigno por defecto : index
@@ -50,6 +51,7 @@
 
 
             //existe el metodo en el controlador? 
+            $controllerName ="\\App\\Controllers\\$controllerName";
             $controllerObject = new $controllerName; //objeto de la clase ($controllerName)
 
             if(method_exists($controllerObject,$method)){
