@@ -26,6 +26,7 @@
         }
         
         public function login(){
+            $this->crearxml();
             //si esta definida la cookie de usuario que redireccione al metodo home
             if (isset($_COOKIE['usuario'])) {
                 //Redirige al metodo home
@@ -75,7 +76,8 @@
         }
 
         public function home(){
-            
+            echo "Bienvenido usuario " ;
+            echo $_COOKIE['usuario'];
             //incluir aquí el contenido del archivo home.php que encuentra en la carpeta vista
             include('views/home.php');  
         }
@@ -105,10 +107,30 @@
                 $sentencia->execute(); //ejecutar la sentencia
 
                 header("Location: ?method=home");
-
+                //echo "Contacto de persona añadido correctamente";
             } catch (PDOException $e) {
-                echo "Error producido al conectar: " . $e->getMessage();
+                echo "Error producido al insertar un contacto: " . $e->getMessage();
             }
 
+        }
+
+        public function mostrarFormuPersona(){
+            include('views/crearpersona.php');
+        }
+
+        private function crearxml(){
+            $datos = simplexml_load_file("agenda.xml");
+
+            if($datos == false){
+                echo "<br>No se ha podido leer el xml: ";
+                exit();
+            }
+            
+            //se usa este comentario para indicar de que tipo es la variable, ya que el metodo atribute salía como error en visual studio code
+            /** @var SimpleXMLElement $contacto*/ 
+            foreach ($datos->children() as $contacto){
+                $atributo = $contacto->attributes();
+                print_r($atributo);
+            }
         }
      }
