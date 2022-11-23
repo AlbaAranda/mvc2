@@ -1,4 +1,5 @@
 <?php
+    use \Core\App;
     /*echo "<h2>Contenido Privado</h2>";*/
 
     // /recurso/accion/parametro
@@ -6,7 +7,10 @@
         //accion: metodos de los controladores
         //parametros: find->ide de producto
     
-    require "core/App.php";
+    //require "core/App.php";
+
+    //autoload de composer
+    require 'vendor/autoload.php';
 
     $app = new App();
 

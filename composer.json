@@ -1,0 +1,21 @@
+{
+    "name": "alumno/mvc",
+    "authors": [
+        {
+            "name": "Alba Aranda",
+            "email": "albaarandagomez@gmail.com"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^2.0"
+    },
+    
+        "autoload": {
+            "psr-4": {
+                "Core\\": "core/",
+                "App\\Controllers\\": "app/controllers/",
+                "App\\Models\\": "app/models/"
+            }
+        }
+    
+}
