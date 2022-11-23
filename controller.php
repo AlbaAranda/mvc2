@@ -1,9 +1,9 @@
 <?php
-    
+    namespace App\Models;
     //Controlador
-    require_once "Product.php";
+    //require_once "Product.php";
 
-    class Controller 
+class Controller 
 {
    function __construct()
    {
@@ -15,7 +15,7 @@
     -llama a vista de inventario*/ 
    public function home(){
         $products = \Product::all();
-        require "views/home.php";
+        //require "views/home.php";
    }
 
    /**funcion que 

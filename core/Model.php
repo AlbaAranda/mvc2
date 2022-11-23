@@ -12,7 +12,7 @@
         protected static function db(){
             try {
                 $db = new PDO(DSN, USER, PASSWORD);
-                $db ->setAttribute(PDO:ATTR_ERRMODE, PDO::EXCEPTION);
+                $db ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             }
             catch (PDOException $e){
