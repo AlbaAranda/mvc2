@@ -1,5 +1,5 @@
 <?php
-
+    
     //Controlador
     require_once "Product.php";
 
@@ -14,7 +14,7 @@
     -recoge todos los prodctos
     -llama a vista de inventario*/ 
    public function home(){
-        $products = Product::all();
+        $products = \Product::all();
         require "views/home.php";
    }
 
@@ -24,7 +24,7 @@
     */
     public function show(){
         $id = $_GET["id"];
-        $product = Product::find($id); //vendrá de start.php
+        $product = \Product::find($id); //vendrá de start.php
         require "views/show.php";
     }
 }
