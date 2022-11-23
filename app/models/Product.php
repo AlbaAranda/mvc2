@@ -1,5 +1,5 @@
 <?php 
-
+ namespace App\Models;
 //namespace global es \
 
 //es el modelo
