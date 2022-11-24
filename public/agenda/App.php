@@ -119,8 +119,10 @@
         }
 
         private function crearxml(){
+            //cargamos el archivo xml
             $datos = simplexml_load_file("agenda.xml");
 
+        
             if($datos == false){
                 echo "<br>No se ha podido leer el xml: ";
                 exit();
@@ -128,9 +130,55 @@
             
             //se usa este comentario para indicar de que tipo es la variable, ya que el metodo atribute salía como error en visual studio code
             /** @var SimpleXMLElement $contacto*/ 
+            //sacar todos los nodos hijos del nodo principal
             foreach ($datos->children() as $contacto){
                 $atributo = $contacto->attributes();
-                print_r($atributo);
+                
+            
+                if((string)$atributo['tipo'] === "persona"){
+                    
+                    try {
+                        $db = new PDO($this->dsn,$this->usuario, $this->password);
+                        //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                        //establece el nivel de error quemuestra en la conexion
+                        $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                        //preparacion por nombre
+                        //guardar en una variable la sentencia sql. Se coge el telefono como distintivo ( como si fuera un id unico para cada personal)
+                        $sentencia = $db->prepare("SELECT *  FROM persona WHERE telefono=:telefono");
+
+                        $telefono = (string)$contacto->telefono;
+                        $sentencia->bindParam(":telefono", $telefono);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                        
+                        
+                        $sentencia->execute(); //ejecutar la sentencia
+
+                        //trae los datos de la consulta (select)
+                        $resultado = $sentencia->fetch();
+                        var_dump($resultado);
+                    
+                        //si el el resultado es nulo, es decir que no existe la persona con el telefono
+                        if(!$resultado){
+                           
+                            $insert = $db->prepare("INSERT INTO persona (nombre,apellidos,direccion,telefono) VALUES (:nombre,:apellidos,:direccion,:telefono)");
+                            $nombre = (string)$contacto->nombre;
+                            $apellidos = (string)$contacto->apellidos;
+                            $direccion = (string)$contacto->direccion;
+
+                            $insert->bindParam(":nombre", $nombre); 
+                            $insert->bindParam(":apellidos", $apellidos);
+                            $insert->bindParam(":direccion", $direccion);
+                            $insert->bindParam(":telefono", $telefono);
+
+                            $insert->execute(); //ejecutar la sentencia
+                    
+                        }
+                        
+
+                    } catch (Exception $e) {
+                        echo "Error producido al conectar: " . $e->getMessage();
+                    }
+                }
             }
         }
      }
