@@ -28,7 +28,7 @@
         public function login(){
             $this->crearxml();
             //si esta definida la cookie de usuario que redireccione al metodo home
-            if (isset($_COOKIE['usuario'])) {
+            if (isset($_SESSION['usuario'])) {
                 //Redirige al metodo home
                 header("Location: ?method=home");
             return;
@@ -37,6 +37,7 @@
             include('views/login.php');    
         }
 
+        //metodo para comprobar input usuario no esta vacio, y si es asi coge el usuario de la base de datos. A continuación en el ultimo if  valida la contraseña
         public function auth(){
             if (isset($_POST['envio'])) {
                 if (!empty($_POST['usuario'])) { 
@@ -48,24 +49,26 @@
                         $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
                         //preparacion por nombre
-                        //los dos puntos que hay dentro de los parentesis de values son porque la sintaxis es asi 
-                        //no hace fata que  se llame igual que $clave dentro de values
                         $sentencia = $db->prepare("SELECT *  FROM credenciales WHERE usuario=:usuario");
 
                         $sentencia->bindParam(":usuario", $_POST['usuario']);  //coge los ultimos valores, si se ha redefinido coge los ultimos
                         
                         $sentencia->execute(); //ejecutar la sentencia
-                        //trae los datos de la query
+
+                        //guardar los datos de la consulta en una variable
                         $resultado = $sentencia->fetch();
 
                         $passworduser = $resultado['password'];
                     
+                        //validar la constraseña
                         if(password_verify($_POST['password'],$passworduser)){
-                            setcookie("usuario",$_POST["usuario"],time()+3600);
+                            //crear la cookie del usuario una vez validada la contraseña
+                            //setcookie("usuario",$_POST["usuario"],time()+3600);
+                            session_start();
+                            $_SESSION['usuario'] = $_POST['usuario'];
                             header("Location: ?method=home");
                     
-                        }
-                        
+                        } 
 
                     } catch (PDOException $e) {
                         echo "Error producido al conectar: " . $e->getMessage();
@@ -75,9 +78,12 @@
             }
         }
 
+        //metodo para mostrar un saludo una vez logueado con el nombre del usuario e incluir una lista con las funciones disponibles de la app
         public function home(){
+            session_start();
             echo "Bienvenido usuario " ;
-            echo $_COOKIE['usuario'];
+            echo $_SESSION['usuario'];
+            echo "<br>";
             //incluir aquí el contenido del archivo home.php que encuentra en la carpeta vista
             include('views/home.php');  
         }
@@ -114,22 +120,25 @@
 
         }
 
+        //metodo para mostrar el formulario para añadir un contacto de persona nuevo 
         public function mostrarFormuPersona(){
             include('views/crearpersona.php');
         }
 
+        //metodo para cargar el xml requerido
         private function crearxml(){
             //cargamos el archivo xml
             $datos = simplexml_load_file("agenda.xml");
 
-        
+            //si no no se encuentra el archivo que se imprima un mensaje de error 
             if($datos == false){
                 echo "<br>No se ha podido leer el xml: ";
                 exit();
             }
             
-            //se usa este comentario para indicar de que tipo es la variable, ya que el metodo atribute salía como error en visual studio code
+            //se usa este comentario para indicar de que tipo es la variable, ya que el metodo atributes() salía como error en visual studio code
             /** @var SimpleXMLElement $contacto*/ 
+            
             //sacar todos los nodos hijos del nodo principal
             foreach ($datos->children() as $contacto){
                 $atributo = $contacto->attributes();
@@ -155,7 +164,6 @@
 
                         //trae los datos de la consulta (select)
                         $resultado = $sentencia->fetch();
-                        var_dump($resultado);
                     
                         //si el el resultado es nulo, es decir que no existe la persona con el telefono
                         if(!$resultado){
@@ -179,6 +187,206 @@
                         echo "Error producido al conectar: " . $e->getMessage();
                     }
                 }
+
+                if((string)$atributo['tipo'] === "empresa"){
+
+                    try {
+                        $db = new PDO($this->dsn,$this->usuario, $this->password);
+                        //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                        //establece el nivel de error quemuestra en la conexion
+                        $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                        //preparacion por nombre
+                        //guardar en una variable la sentencia sql. Se coge el telefono como distintivo ( como si fuera un id unico para cada personal)
+                        $sentencia = $db->prepare("SELECT *  FROM empresa WHERE telefono=:telefono");
+
+                        $telefono = (string)$contacto->telefono;
+                        $sentencia->bindParam(":telefono", $telefono);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                        
+                        
+                        $sentencia->execute(); //ejecutar la sentencia
+
+                        //trae los datos de la consulta (select)
+                        $resultado = $sentencia->fetch();
+                    
+                        //si el el resultado es nulo, es decir que no existe la persona con el telefono
+                        if(!$resultado){
+                           
+                            $insert = $db->prepare("INSERT INTO empresa (nombre,direccion,telefono,email) VALUES (:nombre,:direccion,:telefono,:email)");
+                            $nombre = (string)$contacto->nombre;
+                            $direccion = (string)$contacto->direccion;
+                            $email = (string)$contacto->email;
+
+                            $insert->bindParam(":nombre", $nombre); 
+                            $insert->bindParam(":direccion", $direccion);
+                            $insert->bindParam(":telefono", $telefono);
+                            $insert->bindParam(":email", $email);
+
+                            $insert->execute(); //ejecutar la sentencia
+                        }
+                        
+                    } catch (Exception $e) {
+                        echo "Error producido al conectar: " . $e->getMessage();
+                    }
+                }
             }
         }
+
+        public function buscar(){
+            try {
+                $db = new PDO($this->dsn,$this->usuario, $this->password);
+                //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                //establece el nivel de error quemuestra en la conexion
+                $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                //preparacion por nombre
+                //guardar en una variable la sentencia sql. Se coge el nombre como distintivo ( como si fuera un id unico para cada personal)
+                $sentencia = $db->prepare("SELECT *  FROM persona WHERE nombre=:nombre");
+
+                $nombre = $_POST["nombre"];
+                $sentencia->bindParam(":nombre", $nombre);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                
+                
+                $sentencia->execute(); //ejecutar la sentencia
+
+                //trae los datos de la consulta (select)
+                $persona = $sentencia->fetch();
+                
+                // necesario para mostrar mensaje en la views
+                $personaEncontrada = false;
+                //si hay un resultado
+                if($persona){
+                   $personaEncontrada = true;
+                }
+
+                require('views/buscarPersona.php');
+
+            } catch (Exception $e) {
+                echo "Error producido al buscar una persona: " . $e->getMessage();
+            }
+        }
+
+        public function showBuscar(){
+            include('views/buscarPersona.php');
+        }
+
+        public function eliminar(){
+            try {
+                $db = new PDO($this->dsn,$this->usuario, $this->password);
+                //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                //establece el nivel de error quemuestra en la conexion
+                $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                //preparacion por nombre
+                //guardar en una variable la sentencia sql. Se coge el nombre como distintivo ( como si fuera un id unico para cada personal)
+                $sentencia = $db->prepare("SELECT *  FROM persona WHERE nombre=:nombre");
+
+                //guardar el nombre de la persona en una variable 
+                $nombre = $_POST["nombre"];
+                $sentencia->bindParam(":nombre", $nombre);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                
+                
+                $sentencia->execute(); //ejecutar la sentencia
+
+                //trae los datos de la consulta (select)
+                $persona = $sentencia->fetch();
+            
+                $personaEncontrada = false;
+
+                //si hay un resultado
+                if($persona){
+                   $personaEncontrada = true;
+                   $sentenciaBorrar = $db->prepare("DELETE FROM persona WHERE nombre=:nombre");
+                   $sentenciaBorrar->bindParam(":nombre", $nombre);
+                   $sentenciaBorrar->execute(); //ejecutar la sentencia
+
+                   $personaEliminada = true;
+                }
+
+                require('views/eliminarPersona.php');
+
+            } catch (Exception $e) {
+                echo "Error producido al buscar una persona: " . $e->getMessage();
+            }
+        }
+
+        public function showDelete(){
+            include('views/eliminarPersona.php');
+        }
+
+
+        public function update(){
+            try {
+                $db = new PDO($this->dsn,$this->usuario, $this->password);
+                //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                //establece el nivel de error quemuestra en la conexion
+                $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                //preparacion por nombre
+                //guardar en una variable la sentencia sql. Se coge el nombre como distintivo ( como si fuera un id unico para cada personal)
+                $sentencia = $db->prepare("UPDATE persona SET  apellidos = :apellidos, direccion = :direccion, telefono = :telefono WHERE nombre = :nombre");
+
+                //guardar el nombre de la persona en una variable 
+                $nombre = $_POST["nombre"];
+                $sentencia->bindParam(":nombre", $nombre);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                
+                $apellidos = $_POST["apellidos"];
+                $sentencia->bindParam(':apellidos', $apellidos);
+
+                $direccion = $_POST["direccion"];
+                $sentencia->bindParam(':direccion', $direccion);
+
+                $telefono = $_POST["telefono"];
+                $sentencia->bindParam(':telefono', $telefono);
+
+                $sentencia->execute(); //ejecutar la sentencia
+            
+                $personaActualizada = true;
+
+
+                require('views/actualizarPersona.php');
+
+            } catch (Exception $e) {
+                echo "Error producido al buscar una persona: " . $e->getMessage();
+            }
+        }
+
+        public function buscarPersonaActualizar(){
+            try {
+                $db = new PDO($this->dsn,$this->usuario, $this->password);
+                //se utilizará de nivel de error el que saca una excepcion -> PDO::_EXCEPTION
+                //establece el nivel de error quemuestra en la conexion
+                $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+                //preparacion por nombre
+                //guardar en una variable la sentencia sql. Se coge el nombre como distintivo ( como si fuera un id unico para cada personal)
+                $sentencia = $db->prepare("SELECT *  FROM persona WHERE nombre=:nombre");
+
+                $nombre = $_POST["nombre"];
+                $sentencia->bindParam(":nombre", $nombre);  //coge los ultimos valores, si se ha redefinido coge los ultimos
+                
+                
+                $sentencia->execute(); //ejecutar la sentencia
+
+                //trae los datos de la consulta (select)
+                $persona = $sentencia->fetch();
+                
+                // necesario para mostrar mensaje en la views
+                $personaEncontrada = false;
+                //si hay un resultado
+                if($persona){
+                   $personaEncontrada = true;
+                }
+
+                require('views/actualizarPersona.php');
+
+            } catch (Exception $e) {
+                echo "Error producido al buscar una persona: " . $e->getMessage();
+            }
+        }
+
+        public function showUpdate(){
+            include('views/actualizarPersona.php');
+        }
+
      }

@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicio 18</title>
+    <title>Agenda</title>
 </head>
 <body>
-    <h3>Ejercicio 18</h3>
-    <h3>Login</h3>
+    <h2>Login</h2>
     <!--con el action se llama al metodo auth para enviarle los datos del formulario -->
     <form name="formulario" action="?method=auth" method="post">
         <p>

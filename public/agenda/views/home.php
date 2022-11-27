@@ -6,6 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-<li> <a href="?method=mostrarFormuPersona">Agregar persona<a> </li>
+    <li> <a href="?method=mostrarFormuPersona">Agregar persona<a> </li>
+    <li> <a href="?method=showBuscar">Buscar una persona<a> </li>
+    <li> <a href="?method=showDelete">Eliminar un contacto persona<a> </li>
+    <li> <a href="?method=showUpdate">Actualizar un contacto persona<a> </li>
 </body>
 </html>
