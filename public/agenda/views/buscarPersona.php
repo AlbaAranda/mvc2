@@ -6,7 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-      
+    <!-- incluir la lista de opciones de home-->
+    <?php include('home.php')?> 
+
     <form name="formuBuscaPersona" action="?method=buscar" method="post">
         <h2>Buscar persona:</h2>
         <label>Nombre: </label>
@@ -20,10 +22,10 @@
         }
 
         if($persona){
-            echo $persona['nombre'];
-            echo $persona['apellidos'];
-            echo $persona['direccion'];
-            echo $persona['telefono'];
+            echo "<br>Nombre: " . $persona['nombre'];
+            echo "<br>Apellidos: " .$persona['apellidos'];
+            echo "<br>Dirección: " . $persona['direccion'];
+            echo "<br>Teléfono: " . $persona['telefono'];
         } ?>
 </body>
 </html>

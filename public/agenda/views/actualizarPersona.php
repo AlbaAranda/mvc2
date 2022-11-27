@@ -6,7 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-      
+    <!-- incluir la lista de opciones de home-->
+    <?php include('home.php')?> 
+
     <form name="formuBuscaPersona" action="?method=buscarPersonaActualizar" method="post">
         <h2>Buscar persona:</h2>
         <label>Nombre: </label>
@@ -14,6 +16,7 @@
         <input type="submit" name="envio" id="envio" value="Enviar Datos">
     </form>
     <br><br>
+    <!--se añade este trozo de codigo en php para que se muestre si se ha actualizado o no con exito-->
     <?php 
         if(isset($personaEncontrada) && !$personaEncontrada){
             echo "No se ha encontrado a la persona consultada";
@@ -25,10 +28,10 @@
     ?>
     <!--si la variable persona está definida y no es ni nula ni false que acceda al formulario escrito debajo -->
     <?php if(isset($persona) && $persona): ?> 
-        <?php echo $persona['direccion']; ?>
         <form name="formupersona" action="?method=update" method="post">
         <h2>Actualizar persona:</h2>
         <label>Nombre: <?php echo $persona['nombre']?></label>
+        <!-- Con lo añadido en value se muestra en el formulario por defecto los datos del contacto que se quier actualizar-->
         <input type="text" id="nombre" name="nombre" hidden value= "<?php echo $persona['nombre']?>">
         <label>Apellidos: </label>
         <input type="text" id="apellidos" name="apellidos" value= "<?php echo $persona['apellidos']?>">

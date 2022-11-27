@@ -6,7 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <!-- incluir la lista de opciones de home-->
+    <?php include('home.php')?>
     <form name="formupersona" action="?method=crearpersona" method="post">
         <h2>Añadir persona:</h2>
         <label>Nombre: </label>
